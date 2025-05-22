@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 const DataTable = ({ data }) => {
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "desc" });
+
   if (!data || data.length === 0) {
     return (
       <div style={{
@@ -33,6 +35,27 @@ const DataTable = ({ data }) => {
     },
     { totalSales: 0, totalAdvertisingCost: 0, totalImpressions: 0, totalClicks: 0 }
   );
+
+  // Sorting logic
+  const sortedData = React.useMemo(() => {
+    if (!sortConfig.key) return data;
+    const sorted = [...data].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
+      if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [data, sortConfig]);
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        // Toggle direction
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+      }
+      return { key, direction: "desc" };
+    });
+  };
 
   const formatCurrency = (value) => `₹${new Intl.NumberFormat().format(value)}`;
   const formatNumber = (value) => new Intl.NumberFormat().format(value);
@@ -68,14 +91,90 @@ const DataTable = ({ data }) => {
         <thead style={{ background: "#f5f5f5" }}>
           <tr>
             <th style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555" }}>Shoe Name</th>
-            <th style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right" }}>Sales</th>
-            <th style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right" }}>Advertising Cost</th>
-            <th style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right" }}>Impressions</th>
-            <th style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right" }}>Clicks</th>
+            <th
+              style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right", cursor: "pointer", userSelect: "none", minWidth: 120 }}
+              onClick={() => handleSort("totalSales")}
+            >
+              Sales
+              <span style={{
+                display: 'inline-flex', flexDirection: 'column', alignItems: 'center', marginLeft: 6, fontSize: "1.2em", verticalAlign: 'middle', height: 28, justifyContent: 'center'
+              }}>
+                <span style={{
+                  color: sortConfig.key === "totalSales" && sortConfig.direction === "asc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalSales" && sortConfig.direction === "asc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▴</span>
+                <span style={{
+                  color: sortConfig.key === "totalSales" && sortConfig.direction === "desc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalSales" && sortConfig.direction === "desc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▾</span>
+              </span>
+            </th>
+            <th
+              style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right", cursor: "pointer", userSelect: "none", minWidth: 120 }}
+              onClick={() => handleSort("totalAdvertisingCost")}
+            >
+              Advertising Cost
+              <span style={{
+                display: 'inline-flex', flexDirection: 'column', alignItems: 'center', marginLeft: 6, fontSize: "1.2em", verticalAlign: 'middle', height: 28, justifyContent: 'center'
+              }}>
+                <span style={{
+                  color: sortConfig.key === "totalAdvertisingCost" && sortConfig.direction === "asc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalAdvertisingCost" && sortConfig.direction === "asc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▴</span>
+                <span style={{
+                  color: sortConfig.key === "totalAdvertisingCost" && sortConfig.direction === "desc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalAdvertisingCost" && sortConfig.direction === "desc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▾</span>
+              </span>
+            </th>
+            <th
+              style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right", cursor: "pointer", userSelect: "none", minWidth: 120 }}
+              onClick={() => handleSort("totalImpressions")}
+            >
+              Impressions
+              <span style={{
+                display: 'inline-flex', flexDirection: 'column', alignItems: 'center', marginLeft: 6, fontSize: "1.2em", verticalAlign: 'middle', height: 28, justifyContent: 'center'
+              }}>
+                <span style={{
+                  color: sortConfig.key === "totalImpressions" && sortConfig.direction === "asc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalImpressions" && sortConfig.direction === "asc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▴</span>
+                <span style={{
+                  color: sortConfig.key === "totalImpressions" && sortConfig.direction === "desc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalImpressions" && sortConfig.direction === "desc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▾</span>
+              </span>
+            </th>
+            <th
+              style={{ padding: "12px 15px", borderBottom: "2px solid #ddd", color: "#555", textAlign: "right", cursor: "pointer", userSelect: "none", minWidth: 120 }}
+              onClick={() => handleSort("totalClicks")}
+            >
+              Clicks
+              <span style={{
+                display: 'inline-flex', flexDirection: 'column', alignItems: 'center', marginLeft: 6, fontSize: "1.2em", verticalAlign: 'middle', height: 28, justifyContent: 'center'
+              }}>
+                <span style={{
+                  color: sortConfig.key === "totalClicks" && sortConfig.direction === "asc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalClicks" && sortConfig.direction === "asc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▴</span>
+                <span style={{
+                  color: sortConfig.key === "totalClicks" && sortConfig.direction === "desc" ? "#2a4759" : "#bbb",
+                  fontWeight: sortConfig.key === "totalClicks" && sortConfig.direction === "desc" ? 700 : 400,
+                  margin: 0, lineHeight: 1
+                }}>▾</span>
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {data.map((shoe, index) => (
+          {sortedData.map((shoe, index) => (
             <tr key={index} style={{ background: "#fff", boxShadow: "0 2px 5px rgba(0,0,0,0.05)", transition: "transform 0.2s ease-in-out", cursor: "pointer" }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.005)'}
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
