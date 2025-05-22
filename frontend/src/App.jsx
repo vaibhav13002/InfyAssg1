@@ -62,53 +62,47 @@ function App() {
   }, [startDate, endDate]);
 
   return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>
+    <div style={{ width: '100vw', minHeight: '100vh', padding: 0, margin: 0, boxSizing: 'border-box' }}>
+      <h1 style={{ textAlign: 'center', margin: '25px 0 3px 0', fontSize: '3.2rem', fontWeight: 700 }}>
         Shoe Brand Sales Dashboard
       </h1>
-
-      <DateRangePicker
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-      />
-
-      {loading && (
-        <div style={{ textAlign: "center", margin: "20px 0" }}>
-          <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Loading data...</p>
-        </div>
-      )}
-
-      {!loading && (
-        <>
-          {hasData ? (
-            <>
-              {/* Row 2: Metric Summary Tiles */}
-              {summary && <SummaryTiles summary={summary} />}
-
-              {/* Row 3: Line Chart */}
-              <SalesLineChart startDate={startDate} endDate={endDate} />
-
-              {/* Row 4: Data Table */}
-              <DataTable data={tableData} />
-            </>
-          ) : (
-            <div style={{
-              marginTop: "30px",
-              padding: "20px",
-              background: "#fff8f8",
-              border: "1px solid #ffcccc",
-              borderRadius: "5px",
-              textAlign: "center"
-            }}>
-              <p style={{ color: "#d32f2f", fontSize: "1.1rem" }}>
-                No sales data available for the selected date range. Please try different dates.
-              </p>
-            </div>
-          )}
-        </> 
-      )}
+      <div style={{ width: '100%', boxSizing: 'border-box', padding: '0 2vw' }}>
+        <DateRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+        />
+        {loading && (
+          <div style={{ textAlign: 'center', margin: '20px 0' }}>
+            <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Loading data...</p>
+          </div>
+        )}
+        {!loading && (
+          <>
+            {hasData ? (
+              <>
+                {summary && <SummaryTiles summary={summary} />}
+                <SalesLineChart startDate={startDate} endDate={endDate} />
+                <DataTable data={tableData} />
+              </>
+            ) : (
+              <div style={{
+                marginTop: '30px',
+                padding: '20px',
+                background: '#fff8f8',
+                border: '1px solid #ffcccc',
+                borderRadius: '5px',
+                textAlign: 'center'
+              }}>
+                <p style={{ color: '#d32f2f', fontSize: '1.1rem' }}>
+                  No sales data available for the selected date range. Please try different dates.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
