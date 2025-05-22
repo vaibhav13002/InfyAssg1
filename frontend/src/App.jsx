@@ -6,6 +6,8 @@ import DataTable from "./components/DataTable"; // Import the new DataTable comp
 import AdvancedMetricsPanel from "./components/AdvancedMetricsPanel";
 import TilePieChart from "./components/TilePieChart";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function App() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -24,11 +26,12 @@ function App() {
 
           // --- Fetch Summary Data (Existing) ---
           const summaryRes = await fetch(
-            `http://localhost:5000/api/sales/summary?startDate=${
+            `${API_BASE_URL}/api/sales/summary?startDate=${
               startDate.toISOString().split("T")[0]
             }&endDate=${endDate.toISOString().split("T")[0]}`
           );
           const summaryData = await summaryRes.json();
+          console.log('SUMMARY API RESPONSE:', summaryData); // DEBUG
           setSummary(summaryData);
 
           // Check if overall summary data exists
@@ -38,14 +41,13 @@ function App() {
                                    summaryData.totalClicks > 0;
 
           // --- Fetch Table Data (New) ---
-          // IMPORTANT: Confirm this endpoint with your backend.
-          // This endpoint should return data *per shoe* for the date range.
           const tableRes = await fetch(
-            `http://localhost:5000/api/sales/summary-by-shoe?startDate=${
+            `${API_BASE_URL}/api/sales/summary-by-shoe?startDate=${
               startDate.toISOString().split("T")[0]
             }&endDate=${endDate.toISOString().split("T")[0]}`
           );
           const tableRawData = await tableRes.json();
+          console.log('SUMMARY-BY-SHOE API RESPONSE:', tableRawData); // DEBUG
           setTableData(tableRawData);
 
           // Determine overall data availability

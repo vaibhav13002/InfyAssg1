@@ -50,6 +50,8 @@ const METRIC_CONFIG = {
   }
 };
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const SalesLineChart = ({ startDate, endDate }) => {
   const [shoeName, setShoeName] = useState("");
   const [primaryMetric, setPrimaryMetric] = useState("totalSales");
@@ -203,7 +205,7 @@ const SalesLineChart = ({ startDate, endDate }) => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/sales/shoes")
+    fetch(`${API_BASE_URL}/api/sales/shoes`)
       .then((res) => res.json())
       .then((data) => {
         setShoeOptions(data);
@@ -219,7 +221,7 @@ const SalesLineChart = ({ startDate, endDate }) => {
       try {
         setLoading(true);
         const res = await fetch(
-          `http://localhost:5000/api/sales/daily?startDate=${startDate.toISOString().split("T")[0]}&endDate=${endDate.toISOString().split("T")[0]}&shoeName=${shoeName}`
+          `${API_BASE_URL}/api/sales/daily?startDate=${startDate.toISOString().split("T")[0]}&endDate=${endDate.toISOString().split("T")[0]}&shoeName=${shoeName}`
         );
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
