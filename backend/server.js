@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://shoes-dashboard-frontend.vercel.app', // Replace with your actual Vercel frontend URL
-  'https://your-frontend-url.vercel.app' // fallback for user to edit
+  'https://infy-assg1.vercel.app', // your Vercel frontend
+  'https://infyassg1.onrender.com' // allow self for health checks
 ];
 app.use(cors({
   origin: allowedOrigins,
