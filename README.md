@@ -12,6 +12,14 @@ A full-featured analytics dashboard for visualizing and analyzing sales, ad spen
 - **Responsive, modern UI** (React + Vite)
 - **Backend REST API** (Express + MongoDB)
 - **Cloud-ready deployment** (Render.com, Vercel, MongoDB Atlas)
+---
+## Images
+![Screenshot 2025-05-23 004404](https://github.com/user-attachments/assets/1bfd4862-baa0-4471-a7cf-5b0ce07e6ead)
+![Screenshot 2025-05-23 004419](https://github.com/user-attachments/assets/f216a19a-0ea3-4df8-aba1-8255773d4e1b)
+![Screenshot 2025-05-23 004434](https://github.com/user-attachments/assets/2b48c197-0fc8-4931-8031-d23cb5f36c47)
+![Screenshot 2025-05-23 004449](https://github.com/user-attachments/assets/0aab4b52-da75-4027-8025-deb24c40c96e)
+![Screenshot 2025-05-23 004458](https://github.com/user-attachments/assets/b3423f2f-15a6-48d1-92b5-7aaabd700992)
+![Screenshot 2025-05-23 004528](https://github.com/user-attachments/assets/f057b0f9-f5b1-4df6-80e8-5fce140da001)
 
 ---
 
