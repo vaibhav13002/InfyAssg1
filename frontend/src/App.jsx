@@ -2,43 +2,62 @@ import { useState, useEffect } from "react";
 import DateRangePicker from "./components/DateRangePicker";
 import SummaryTiles from "./components/SummaryTiles";
 import SalesLineChart from "./components/SalesLineChart";
+import DataTable from "./components/DataTable"; // Import the new DataTable component
 
 function App() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [tableData, setTableData] = useState([]); // New state for table data
   const [loading, setLoading] = useState(false);
-  const [hasData, setHasData] = useState(true); // New state for data availability
+  const [hasData, setHasData] = useState(true); // For overall data availability
 
   useEffect(() => {
     if (startDate && endDate) {
-      const fetchSummary = async () => {
+      const fetchAllData = async () => { // Renamed to fetchAllData
         try {
           setLoading(true);
-          const res = await fetch(
+
+          // --- Fetch Summary Data (Existing) ---
+          const summaryRes = await fetch(
             `http://localhost:5000/api/sales/summary?startDate=${
               startDate.toISOString().split("T")[0]
             }&endDate=${endDate.toISOString().split("T")[0]}`
           );
-          const data = await res.json();
-          
-          // Check if we have any data
-          const dataExists = data.totalSales > 0 || 
-                           data.totalAdvertisingCost > 0 || 
-                           data.totalImpressions > 0 || 
-                           data.totalClicks > 0;
-          
-          setHasData(dataExists);
-          setSummary(data);
+          const summaryData = await summaryRes.json();
+          setSummary(summaryData);
+
+          // Check if overall summary data exists
+          const summaryDataExists = summaryData.totalSales > 0 ||
+                                   summaryData.totalAdvertisingCost > 0 ||
+                                   summaryData.totalImpressions > 0 ||
+                                   summaryData.totalClicks > 0;
+
+          // --- Fetch Table Data (New) ---
+          // IMPORTANT: Confirm this endpoint with your backend.
+          // This endpoint should return data *per shoe* for the date range.
+          const tableRes = await fetch(
+            `http://localhost:5000/api/sales/summary-by-shoe?startDate=${
+              startDate.toISOString().split("T")[0]
+            }&endDate=${endDate.toISOString().split("T")[0]}`
+          );
+          const tableRawData = await tableRes.json();
+          setTableData(tableRawData);
+
+          // Determine overall data availability
+          setHasData(summaryDataExists || tableRawData.length > 0);
+
         } catch (error) {
-          console.error("Error fetching summary:", error);
-          setHasData(false);
+          console.error("Error fetching dashboard data:", error);
+          setHasData(false); // If any fetch fails, assume no data
+          setSummary(null); // Clear summary on error
+          setTableData([]); // Clear table data on error
         } finally {
           setLoading(false);
         }
       };
 
-      fetchSummary();
+      fetchAllData();
     }
   }, [startDate, endDate]);
 
@@ -47,7 +66,7 @@ function App() {
       <h1 style={{ textAlign: "center", marginBottom: "30px" }}>
         Shoe Brand Sales Dashboard
       </h1>
-      
+
       <DateRangePicker
         startDate={startDate}
         endDate={endDate}
@@ -61,13 +80,21 @@ function App() {
         </div>
       )}
 
-      {!loading && summary && (
+      {!loading && (
         <>
-          <SummaryTiles summary={summary} />
           {hasData ? (
-            <SalesLineChart startDate={startDate} endDate={endDate} />
+            <>
+              {/* Row 2: Metric Summary Tiles */}
+              {summary && <SummaryTiles summary={summary} />}
+
+              {/* Row 3: Line Chart */}
+              <SalesLineChart startDate={startDate} endDate={endDate} />
+
+              {/* Row 4: Data Table */}
+              <DataTable data={tableData} />
+            </>
           ) : (
-            <div style={{ 
+            <div style={{
               marginTop: "30px",
               padding: "20px",
               background: "#fff8f8",
@@ -80,7 +107,7 @@ function App() {
               </p>
             </div>
           )}
-        </>
+        </> 
       )}
     </div>
   );
