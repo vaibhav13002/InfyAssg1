@@ -3,6 +3,8 @@ import DateRangePicker from "./components/DateRangePicker";
 import SummaryTiles from "./components/SummaryTiles";
 import SalesLineChart from "./components/SalesLineChart";
 import DataTable from "./components/DataTable"; // Import the new DataTable component
+import AdvancedMetricsPanel from "./components/AdvancedMetricsPanel";
+import TilePieChart from "./components/TilePieChart";
 
 function App() {
   const [startDate, setStartDate] = useState(null);
@@ -11,6 +13,8 @@ function App() {
   const [tableData, setTableData] = useState([]); // New state for table data
   const [loading, setLoading] = useState(false);
   const [hasData, setHasData] = useState(true); // For overall data availability
+  const [openSummaryTile, setOpenSummaryTile] = useState(null);
+  const [pieExpanded, setPieExpanded] = useState(false);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -82,9 +86,53 @@ function App() {
           <>
             {hasData ? (
               <>
-                {summary && <SummaryTiles summary={summary} />}
+                {summary && (
+                  <SummaryTiles
+                    summary={summary}
+                    shoeSummary={tableData}
+                    openTile={openSummaryTile}
+                    setOpenTile={setOpenSummaryTile}
+                  />
+                )}
+                {openSummaryTile && (
+                  <div style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    margin: '0 0 30px 0',
+                    padding: '0',
+                  }}>
+                    <div style={{
+                      background: '#fff',
+                      color: '#222',
+                      borderRadius: 14,
+                      boxShadow: '0 2px 16px rgba(0,0,0,0.13)',
+                      padding: 28,
+                      minWidth: pieExpanded ? 520 : 320,
+                      maxWidth: pieExpanded ? 700 : 480,
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      zIndex: 10,
+                      position: 'relative',
+                      animation: 'fadeIn 0.2s',
+                      transition: 'min-width 0.2s, max-width 0.2s',
+                    }}>
+                      <TilePieChart
+                        data={tableData}
+                        metric={openSummaryTile}
+                        onClose={() => { setOpenSummaryTile(null); setPieExpanded(false); }}
+                        expanded={pieExpanded}
+                        setExpanded={setPieExpanded}
+                        inline
+                      />
+                    </div>
+                  </div>
+                )}
                 <SalesLineChart startDate={startDate} endDate={endDate} />
                 <DataTable data={tableData} />
+                <AdvancedMetricsPanel data={tableData} />
               </>
             ) : (
               <div style={{
