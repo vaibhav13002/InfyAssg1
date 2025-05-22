@@ -4,45 +4,46 @@ const SalesData = require('./models/SalesData');
 
 dotenv.config();
 
-// Connect to MongoDB
+// Helper to generate random int in range
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Shoe names to sample
+const shoes = [
+  'Nike Air Max',
+  'Adidas Ultraboost',
+  'Puma RS-X',
+  'Reebok Classic',
+  'New Balance 990',
+  'ASICS Gel-Kayano',
+  'Converse Chuck Taylor',
+  'Vans Old Skool'
+];
+
+// Generate data for each month from Jan 2024 to June 2025
+const start = new Date('2024-01-01');
+const end = new Date('2025-06-01');
+const data = [];
+for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+  for (const shoe of shoes) {
+    data.push({
+      date: new Date(d),
+      shoeName: shoe,
+      sales: randInt(80, 250),
+      advertisingCost: randInt(2000, 7000),
+      impressions: randInt(15000, 40000),
+      clicks: randInt(800, 3000)
+    });
+  }
+}
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
-    return SalesData.insertMany([
-      {
-        date: new Date('2024-05-01'),
-        shoeName: 'Nike Air Max',
-        sales: 150,
-        advertisingCost: 5000,
-        impressions: 30000,
-        clicks: 2000
-      },
-      {
-        date: new Date('2024-05-01'),
-        shoeName: 'Adidas Ultraboost',
-        sales: 120,
-        advertisingCost: 4500,
-        impressions: 28000,
-        clicks: 1700
-      },
-      {
-        date: new Date('2024-05-02'),
-        shoeName: 'Nike Air Max',
-        sales: 180,
-        advertisingCost: 5500,
-        impressions: 31000,
-        clicks: 2200
-      },
-      {
-        date: new Date('2024-05-02'),
-        shoeName: 'Puma RS-X',
-        sales: 90,
-        advertisingCost: 3000,
-        impressions: 22000,
-        clicks: 1300
-      }
-    ]);
+    return SalesData.deleteMany({}); // Clear old data
   })
+  .then(() => SalesData.insertMany(data))
   .then(() => {
     console.log('Sample data inserted ✅');
     mongoose.disconnect();
